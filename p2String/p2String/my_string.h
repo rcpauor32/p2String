@@ -23,6 +23,7 @@ public:
 	bool empty() const;
 	void clear();
 	char* c_str();
+	int GetnArgs();
 
 	bool String::operator==(const char* c_str) const {
 		return strcmp(this->string, c_str) == 0;

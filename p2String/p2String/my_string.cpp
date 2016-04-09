@@ -43,3 +43,14 @@ char* String::c_str() {
 String::~String() {
 	delete[] string;
 };
+
+int String::GetnArgs() {
+	int n_args = 1;
+	while (*(string++) == ' ');
+	for (int i = 0; i < strlen(string); i++){
+		if (string[i] == ' ')
+			n_args++;
+	}
+
+	return n_args;
+}
