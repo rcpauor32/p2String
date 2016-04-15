@@ -2,20 +2,22 @@
 #define	__MY_STRING_H__
 
 #include <string.h>
+#include <assert.h>
+#include <stdio.h>
 
 typedef unsigned int uint;
 
-class String {
+class p2String {
 private:
 	char* string;
 
 public:
 	uint capacity;
 
-	String(unsigned int mem);
-	String(char* c_str1);
-	String(String &str);
-	virtual ~String();
+	p2String(unsigned int mem);
+	p2String(char* c_str1);
+	p2String(p2String &str);
+	virtual ~p2String();
 
 public:
 	int size();
@@ -25,17 +27,19 @@ public:
 	char* c_str();
 	int GetnArgs();
 
-	bool String::operator==(const char* c_str) const {
+	bool p2String::operator==(const char* c_str) const {
 		return strcmp(this->string, c_str) == 0;
 	}
 
-	bool String::operator==(const String& str) const {
+	bool p2String::operator==(const p2String& str) const {
 		return strcmp(this->string, str.string) == 0;
 	}
 
-	const String& String::operator=(const String& str) {
+	const p2String& p2String::operator=(const p2String& str) {
 		if (this->capacity != str.capacity) {
-			delete[] this->string;
+			if (string != nullptr)
+				delete[] this->string;
+
 			capacity = strlen(str.string) + 1;
 			string = new char[capacity];
 		}
@@ -43,9 +47,11 @@ public:
 		return *this;
 	}
 
-	const String& String::operator=(const char* c_str) {
+	const p2String& p2String::operator=(const char* c_str) {
 		if (this->capacity != strlen(c_str) + 1) {
-			delete[] this->string;
+			if (string != nullptr)
+				delete[] this->string;
+
 			capacity = strlen(c_str) + 1;
 			string = new char[capacity];
 		}
@@ -53,27 +59,44 @@ public:
 		return *this;
 	}
 
-/*	const String& String::operator+=(const String& str) {
-		if (str.string != nullptr) {
-			char* aux = new char[this->capacity + strlen(str.string)];
-			strcpy_s(aux, this->capacity, this->string);
-			strcpy_s(aux, str.capacity, str.string);
-			delete[] this->string;
-			return *aux;
+	p2String GetChoosenArg(int n_arg) {
+		p2String ret(capacity);
+		uint i = 0;
+		uint k = 0;
+		uint n_ch = 0;
+		n_arg--;
+		if (n_arg < 1) {
+			for (n_ch = 0; string[n_ch] != ' ' && string[n_ch] != '\0'; n_ch++) {
+				ret.string[n_ch] = string[n_ch];
+			}
+			ret.string[n_ch] = '\0';
 		}
+
+		else {
+			while (i < strlen(string) && n_arg > 0) {
+				if (string[i] == ' ')
+					n_arg--;
+				i++;
+			}
+
+			while (string[i] != '\0' && string[i] != ' ' && i < capacity) {
+				ret.string[k] = string[i];
+				i++;
+				k++;
+			}
+			ret.string[k + 1] = '\0';
+		}
+
+
+		return ret;
 	}
 
-	const char& String::operator+=(const char* c_str) {
-		if (c_str != nullptr) {
-			char* aux = new char[this->capacity + strlen(c_str)];
-			strcpy_s(aux, this->capacity, this->string);
-			strcpy_s(aux, strlen(c_str), c_str);
-			delete[] this->string;
-			return *aux;
-		}
+	const char& p2String::operator[](uint index){
+		assert(index < capacity);
+		return string[index];
 	}
-	*/
-	
+
+
 };
 
 #endif
